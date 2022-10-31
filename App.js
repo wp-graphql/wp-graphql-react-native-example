@@ -13,6 +13,7 @@ import {
   ApolloProvider,
   gql,
   useQuery,
+  HttpLink
 } from '@apollo/client';
 import RenderHtml from 'react-native-render-html';
 
@@ -97,8 +98,16 @@ const Section = ({children, title}): Node => {
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: 'https://content.wpgraphql.com/graphql',
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({}),
+  link: new HttpLink({
+    uri: 'https://content.wpgraphql.com/graphql',
+    useGETForQueries: true,
+  }),
+  defaultOptions: {
+    query: {
+      fetchPolicy: 'network-only',
+    },
+  },
 });
 
 const GET_POSTS = gql`
